@@ -69,8 +69,6 @@ class PostPagesTests(TestCase):
         self.user = User.objects.create_user(username='StasBasov')
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
-
-
         # состоящей из двух пикселей: белого и чёрного
         small_gif = (
             b'\x47\x49\x46\x38\x39\x61\x02\x00'
@@ -141,7 +139,8 @@ class PostPagesTests(TestCase):
         post_author_0 = first_object.author
         post_text_0 = first_object.text
 
-        self.assertEqual(post_text_0, 'Эта запись создана для проверки теста')
+        self.assertEqual(
+            post_text_0, 'Эта запись создана для проверки теста')
         self.assertEqual(post_author_0, self.user)
 
     def test_posts_group_page_shows_correct_context(self):
@@ -157,7 +156,8 @@ class PostPagesTests(TestCase):
         post_author_0 = first_object.author
         post_text_0 = first_object.text
 
-        self.assertEqual(post_text_0, 'Эта запись создана для проверки теста')
+        self.assertEqual(
+            post_text_0, 'Эта запись создана для проверки теста')
         self.assertEqual(post_author_0, self.user)
 
     def test_new_post_page_shows_correct_context(self):
@@ -278,21 +278,32 @@ class FollowTest(TestCase):
         self.author = User.objects.create_user(username='Tolstoy')
 
     def test_follow(self):
-        response = self.authorized_client.get(reverse('profile_follow',  kwargs={'username': self.author.username}))
-        self.assertTrue(Follow.objects.get(user=self.user, author=self.author))
+        response = self.authorized_client.get(
+            reverse('profile_follow',
+                    kwargs={'username': self.author.username}))
+        self.assertTrue(
+            Follow.objects.get(user=self.user, author=self.author))
 
     def test_unfollow(self):
-        response = self.authorized_client.get(reverse('profile_follow',  kwargs={'username': self.author.username}))
-        response = self.authorized_client.get(reverse('profile_unfollow', kwargs={'username': self.author.username}))
-        self.assertFalse(Follow.objects.filter(user=self.user, author=self.author).exists())
+        response = self.authorized_client.get(
+            reverse('profile_follow',
+                    kwargs={'username': self.author.username})) # noqa
+        response = self.authorized_client.get(
+            reverse('profile_unfollow',
+                    kwargs={'username': self.author.username})) # noqa
+        self.assertFalse(Follow.objects.filter(
+            user=self.user, author=self.author).exists())
 
     def test_post_in_follower(self):
-        response = self.authorized_client.get(reverse('profile_follow', kwargs={'username': self.author.username}))
+        response = self.authorized_client.get(
+            reverse('profile_follow',
+                    kwargs={'username': self.author.username})) # noqa
         post = Post.objects.create(
             text='Тестовый пост',
             author=self.author
         )
-        response = self.authorized_client.get(reverse('follow_index'))
+        response = self.authorized_client.get(
+            reverse('follow_index'))
         post1 = response.context['page'][0]
         self.assertEqual(post1, post)
 

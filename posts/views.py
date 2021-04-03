@@ -5,7 +5,6 @@ from .forms import PostForm, CommentForm
 from django.core.paginator import Paginator
 from django.views.generic.base import TemplateView
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import AnonymousUser
 
 User = get_user_model()
 
@@ -20,6 +19,7 @@ def index(request):
         'posts/index.html',
         {'page': page, }
     )
+
 
 def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
@@ -53,7 +53,8 @@ class JustStaticPage(TemplateView):
 
 def profile(request, username):
     user = get_object_or_404(User, username=username)
-    following = Follow.objects.filter(user__id=request.user.id, author=user).exists()
+    following = Follow.objects.filter(
+        user__id=request.user.id, author=user).exists()
     posts = user.posts.all()
     posts_count = len(posts)
     paginator = Paginator(posts, 10)
@@ -63,7 +64,8 @@ def profile(request, username):
 
     return render(
         request, 'posts/profile.html',
-        {'user_prof': user, 'page': page, 'posts_count': posts_count, 'following': following}
+        {'user_prof': user, 'page': page,
+         'posts_count': posts_count, 'following': following}
     )
 
 
@@ -87,12 +89,15 @@ def post_edit(request, username, post_id):
     if request.user != profile:
         return redirect('post', username=username, post_id=post_id)
     # добавим в form свойство files
-    form = PostForm(request.POST or None, files=request.FILES or None, instance=post)
+    form = PostForm(request.POST or None,
+                    files=request.FILES or None, instance=post)
 
     if request.method == 'POST':
         if form.is_valid():
             form.save()
-            return redirect("post", username=request.user.username, post_id=post_id)
+            return redirect(
+                "post",
+                username=request.user.username, post_id=post_id)
 
     return render(
         request, 'posts/new_post.html', {'form': form, 'post': post},
@@ -107,7 +112,8 @@ def add_comment(request, username, post_id):
         comment.author = request.user
         comment.post = get_object_or_404(Post, pk=post_id)
         comment.save()
-        return redirect('post', username=request.user.username, post_id=post_id)
+        return redirect('post',
+                        username=request.user.username, post_id=post_id)
     user = get_object_or_404(User, username=username)
     post = get_object_or_404(Post, id=post_id)
     posts_count = Post.objects.filter(author=user).count()
@@ -141,6 +147,7 @@ def follow_index(request):
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     return render(request, 'posts/follow.html', {'page': page})
+
 
 @login_required
 def profile_follow(request, username):

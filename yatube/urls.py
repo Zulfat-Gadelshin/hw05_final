@@ -10,7 +10,6 @@ handler500 = "posts.views.server_error" # noqa
 urlpatterns = [
     #  регистрация и авторизация
     path("auth/", include("users.urls")),
-
     #  если нужного шаблона для /auth не нашлось в файле users.urls —
     #  ищем совпадения в файле django.contrib.auth.urls
     path("auth/", include("django.contrib.auth.urls")),
@@ -22,10 +21,12 @@ urlpatterns = [
     path("", include("posts.urls")),
 
     path("about/", include("about.urls", namespace='about')),
-
-
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(
+        settings.STATIC_URL,
+        document_root=settings.STATIC_ROOT)

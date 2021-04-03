@@ -89,9 +89,6 @@ class PostCreateFormTests(TestCase):
         self.assertIsNotNone(Post.objects.first().image)
 
 
-
-
-
 class PostEditFormTests(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -133,6 +130,3 @@ class PostEditFormTests(TestCase):
             author=self.user,
             text='Тестовый измененный текст').exists()
         )
-
-
-

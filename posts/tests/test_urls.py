@@ -57,8 +57,6 @@ class PostURLTests(TestCase):
             reverse('group_detail', kwargs={'slug': 'test-slug'}))
         self.assertEqual(response.status_code, 200)
 
-
-
     def test_post_edit_url_redirect_anonymous(self):
         response = self.guest_client.get(
             reverse('post_edit',
@@ -129,10 +127,15 @@ class PostURLTests(TestCase):
                 self.assertEqual(response.status_code, subtest[0])
 
     def test_comment_added_url_not_available_for_guest(self):
-        response = self.guest_client.get(reverse('add_comment', kwargs={'username': 'AndreyG', 'post_id': 1}))
+        response = self.guest_client.get(
+            reverse('add_comment',
+                    kwargs={'username': 'AndreyG', 'post_id': 1}))
         self.assertEqual(response.status_code, 302)
 
     def test_new_comment_url_redirect_anonymous_on_admin_login(self):
-        response = self.guest_client.get(reverse('add_comment', kwargs={'username': 'AndreyG', 'post_id': 1}), follow=True)
+        response = self.guest_client.get(
+            reverse('add_comment',
+                    kwargs={'username': 'AndreyG', 'post_id': 1}),
+            follow=True)
         self.assertRedirects(
             response, '/auth/login/?next=/AndreyG/1/comment')

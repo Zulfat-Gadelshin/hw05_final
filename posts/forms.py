@@ -16,4 +16,3 @@ class CommentForm(ModelForm):
         model = Comment
         # укажем, какие поля должны быть видны в форме и в каком порядке
         fields = ('text',)
-
