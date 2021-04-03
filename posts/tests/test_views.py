@@ -278,26 +278,26 @@ class FollowTest(TestCase):
         self.author = User.objects.create_user(username='Tolstoy')
 
     def test_follow(self):
-        response = self.authorized_client.get(
+        response = self.authorized_client.get(  # noqa
             reverse('profile_follow',
                     kwargs={'username': self.author.username}))
         self.assertTrue(
             Follow.objects.get(user=self.user, author=self.author))
 
     def test_unfollow(self):
-        response = self.authorized_client.get(
+        response = self.authorized_client.get(  # noqa
             reverse('profile_follow',
-                    kwargs={'username': self.author.username})) # noqa
-        response = self.authorized_client.get(
+                    kwargs={'username': self.author.username}))
+        response = self.authorized_client.get(  # noqa
             reverse('profile_unfollow',
-                    kwargs={'username': self.author.username})) # noqa
+                    kwargs={'username': self.author.username}))
         self.assertFalse(Follow.objects.filter(
             user=self.user, author=self.author).exists())
 
     def test_post_in_follower(self):
-        response = self.authorized_client.get(
+        response = self.authorized_client.get(  # noqa
             reverse('profile_follow',
-                    kwargs={'username': self.author.username})) # noqa
+                    kwargs={'username': self.author.username}))
         post = Post.objects.create(
             text='Тестовый пост',
             author=self.author
