@@ -53,8 +53,8 @@ class Comment(models.Model):
         'текст комментария',
         help_text='Напиши комментарии'
     )
-    pub_date = models.DateTimeField('date published',
-                                    auto_now_add=True)
+    created = models.DateTimeField('created',
+                                   auto_now_add=True)
 
 
 class Follow(models.Model):
