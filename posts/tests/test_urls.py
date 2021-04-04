@@ -46,7 +46,7 @@ class PostURLTests(TestCase):
     def test_new_post_url_redirect_anonymous_on_admin_login(self):
         response = self.guest_client.get(reverse('new_post'), follow=True)
         self.assertRedirects(
-            response, ('/auth/login/?next=/new/'))
+            response, reverse('login')+'?next=/new/')
 
     def test_post_added_url_exists_at_desired_location_authorized(self):
         response = self.authorized_client.get(reverse('new_post'))

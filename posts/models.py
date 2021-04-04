@@ -37,7 +37,8 @@ class Post(models.Model):
         related_name='posts',
         verbose_name='название группы',
         help_text='Хелп текст - Укажите название группы')
-    image = models.ImageField(upload_to='posts/', blank=True, null=True)
+    image = models.ImageField(upload_to='posts/',
+                              verbose_name='картинка поста', blank=True, null=True)
 
     def __str__(self):
         return self.text[:15]
@@ -64,3 +65,8 @@ class Follow(models.Model):
     author = models.ForeignKey(User,
                                on_delete=models.CASCADE,
                                related_name='following')
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'author'], name='unique follow')
+        ]

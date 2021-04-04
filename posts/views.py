@@ -88,16 +88,13 @@ def post_edit(request, username, post_id):
     post = get_object_or_404(Post, pk=post_id, author=profile)
     if request.user != profile:
         return redirect('post', username=username, post_id=post_id)
-    # добавим в form свойство files
     form = PostForm(request.POST or None,
                     files=request.FILES or None, instance=post)
-
-    if request.method == 'POST':
-        if form.is_valid():
-            form.save()
-            return redirect(
-                "post",
-                username=request.user.username, post_id=post_id)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        return redirect(
+            "post",
+            username=request.user.username, post_id=post_id)
 
     return render(
         request, 'posts/new_post.html', {'form': form, 'post': post},
@@ -153,20 +150,19 @@ def follow_index(request):
 @login_required
 def profile_follow(request, username):
     user = request.user
-    author = User.objects.get(username=username)
-    if author != user and \
-            not (Follow.objects.filter(user=user, author=author).exists()):
-        follow = Follow()
-        follow.user = request.user
-        follow.author = author
-        follow.save()
-
+    author = get_object_or_404(User, username=username)
+    if author != user:
+        follow, created = Follow.objects.get_or_create(
+            user=user,
+            author=author
+        )
+        if created:
+            follow.save()
     return redirect('profile', username=username)
 
 
 @login_required
 def profile_unfollow(request, username):
     user = get_object_or_404(User, username=username)
-    follow = Follow.objects.get(user=request.user, author=user)
-    follow.delete()
+    follow = Follow.objects.filter(user=request.user, author=user).delete()
     return redirect('profile', username=username)
